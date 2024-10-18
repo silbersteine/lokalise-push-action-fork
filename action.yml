@@ -1,6 +1,6 @@
 name: 'Push to Lokalise'
-description: 'Push translation files to Lokalise'
-author: 'Lokalise Team'
+description: 'GitHub action to upload changed translation files in the base language from your GitHub repository to Lokalise TMS.'
+author: 'Lokalise Group, Ilya Krukowski'
 inputs:
   api_token:
     description: 'API token for Lokalise with read/write permissions'
