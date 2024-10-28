@@ -16,7 +16,7 @@ jobs:
         uses: ./
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
-          project_id: 5868381966b39e5053ff15.63486389
+          project_id: 29789744671f8a3dd64104.44870788
           base_lang: en
           file_format: json
           additional_params: "--convert-placeholders --hidden-from-contributors"
