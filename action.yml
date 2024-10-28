@@ -13,10 +13,6 @@ inputs:
     description: 'Base language (e.g., en, fr_FR)'
     required: true
     default: 'en'
-  translations_path:
-    description: 'Path to translation files'
-    required: true
-    default: 'locales'
   file_format:
     description: 'Format of the translation files (e.g., json). Find all supported file formats at https://developers.lokalise.com/reference/api-file-formats'
     required: true
@@ -45,7 +41,7 @@ runs:
       id: changed-files
       uses: tj-actions/changed-files@v45
       with:
-        files: "${{ inputs.translations_path }}/${{ inputs.base_lang }}/**/**.${{ inputs.file_format }}"
+        files: "**/locales/**/${{ inputs.base_lang }}.yml"
 
     - name: Check if this is the first run on the branch
       if: steps.changed-files.outputs.any_changed == 'false'
@@ -63,7 +59,7 @@ runs:
       id: find-files
       shell: bash
       run: |
-        ALL_FILES=$(find "${{ inputs.translations_path }}/${{ inputs.base_lang }}" -name "*.${{ inputs.file_format }}" -type f | tr '\n' ' ')
+        ALL_FILES=$(find "**/locales/**/${{ inputs.base_lang }}.yml" -name "*.${{ inputs.file_format }}" -type f | tr '\n' ' ')
 
         if [ -z "$ALL_FILES" ]; then
           echo "No translation files found."
