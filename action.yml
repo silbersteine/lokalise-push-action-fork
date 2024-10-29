@@ -105,13 +105,14 @@ runs:
           exit 0
         fi
     
-        ALL_FILES=$(find "${paths[@]}" -name "*.${file_format}" -type f -print0)
-    
-        if [ -z "$ALL_FILES" ]; then
+        mapfile -d '' -t ALL_FILES_ARRAY < <(find "${paths[@]}" -name "*.${file_format}" -type f -print0)
+
+        if [ ${#ALL_FILES_ARRAY[@]} -eq 0 ]; then
           echo "No translation files found."
           echo "has_files=false" >> $GITHUB_OUTPUT
         else
-          ALL_FILES=$(echo "$ALL_FILES" | tr '\0' '\n')
+          ALL_FILES=$(printf "%s\n" "${ALL_FILES_ARRAY[@]}")
+          
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_OUTPUT
           echo "has_files=true" >> $GITHUB_OUTPUT
         fi
