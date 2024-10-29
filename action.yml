@@ -61,6 +61,7 @@ runs:
       uses: tj-actions/changed-files@v45
       with:
         files_from_source_file: paths.txt
+        separator: '\n'
 
     - name: Check if this is the first run on the branch
       if: steps.changed-files.outputs.any_changed == 'false'
@@ -104,13 +105,13 @@ runs:
           exit 0
         fi
     
-        ALL_FILES=$(find "${paths[@]}" -name "*.${file_format}" -type f)
+        ALL_FILES=$(find "${paths[@]}" -name "*.${file_format}" -type f -print0)
     
         if [ -z "$ALL_FILES" ]; then
           echo "No translation files found."
           echo "has_files=false" >> $GITHUB_OUTPUT
         else
-          ALL_FILES=$(echo "$ALL_FILES" | tr '\n' ' ')
+          ALL_FILES=$(echo "$ALL_FILES" | tr '\0' '\n')
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_OUTPUT
           echo "has_files=true" >> $GITHUB_OUTPUT
         fi
@@ -148,7 +149,7 @@ runs:
         chmod +x "${{ github.action_path }}/src/scripts/lokalise_upload.sh"
 
         set +e
-        echo "${ALL_FILES:-$ALL_CHANGED_FILES}" | tr ' ' '\n' | xargs -P 6 -I {} bash "${{ github.action_path }}/src/scripts/lokalise_upload.sh" "{}" "${{ inputs.project_id }}" "${{ inputs.api_token }}"
+        echo "${ALL_FILES:-$ALL_CHANGED_FILES}" | xargs -P 6 -I {} bash "${{ github.action_path }}/src/scripts/lokalise_upload.sh" "{}" "${{ inputs.project_id }}" "${{ inputs.api_token }}"
         xargs_exit_code=$?
         set -e
 
