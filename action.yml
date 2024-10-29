@@ -140,7 +140,7 @@ runs:
         if [ "${{ steps.check-first-run.outputs.first_run }}" == "true" ]; then
           ALL_FILES="${{ steps.find-files.outputs.ALL_FILES }}"
         else
-          ALL_CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          ALL_CHANGED_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' '|')
         fi
 
         if [ -z "${ALL_FILES}" ] && [ -z "${ALL_CHANGED_FILES}" ]; then
@@ -151,7 +151,6 @@ runs:
         chmod +x "${{ github.action_path }}/src/scripts/lokalise_upload.sh"
 
         set +e
-        # Replace '|' with newlines, so each path is processed correctly by xargs
         echo "${ALL_FILES:-$ALL_CHANGED_FILES}" | tr '|' '\n' | xargs -P 6 -I {} bash "${{ github.action_path }}/src/scripts/lokalise_upload.sh" "{}" "${{ inputs.project_id }}" "${{ inputs.api_token }}"
         xargs_exit_code=$?
         set -e
