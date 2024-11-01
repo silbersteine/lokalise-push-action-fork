@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 if ! command -v lokalise2 >/dev/null 2>&1; then
     echo "Installing Lokalise CLI..."
     curl -sfL https://raw.githubusercontent.com/lokalise/lokalise-cli-2-go/master/install.sh | sh || {

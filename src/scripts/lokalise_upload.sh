@@ -2,7 +2,7 @@
 
 return_with_error() {
     echo "Error: $1" >&2
-    return 1
+    exit 1
 }
 
 upload_file() {
@@ -19,6 +19,8 @@ upload_file() {
     local start_time=$(date +%s)
     local github_ref_name="${GITHUB_REF_NAME}"
 
+    [[ -z "$file" ]] && return_with_error "file is required and cannot be empty."
+    [[ ! -f "$file" ]] && return_with_error "File $file does not exist."
     [[ -z "$project_id" ]] && return_with_error "project_id is required and cannot be empty."
     [[ -z "$token" ]] && return_with_error "token is required and cannot be empty."
     [[ -z "$lang_iso" ]] && return_with_error "lang_iso is required and cannot be empty."
@@ -71,10 +73,7 @@ upload_file() {
             fi
             echo "Attempt $attempt failed with API request error 429 when uploading $file. Retrying in $sleep_time seconds..."
             sleep $sleep_time
-            sleep_time=$((sleep_time * 2))
-            if [ $sleep_time -gt $max_sleep_time ]; then
-                sleep_time=$max_sleep_time
-            fi
+            sleep_time=$((sleep_time * 2 > max_sleep_time ? max_sleep_time : sleep_time * 2))
         else
             return_with_error "Permanent error encountered during file upload $file: $output"
         fi
@@ -82,3 +81,5 @@ upload_file() {
 
     return_with_error "Failed to upload file: $file after $max_retries attempts"
 }
+
+upload_file "$@"
