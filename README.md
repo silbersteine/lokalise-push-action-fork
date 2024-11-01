@@ -29,7 +29,9 @@ jobs:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: LOKALISE_PROJECT_ID
           base_lang: BASE_LANG_ISO
-          translations_path: TRANSLATIONS_PATH
+          translations_path: |
+            TRANSLATIONS_PATH1
+            TRANSLATIONS_PATH2
           file_format: FILE_FORMAT
           additional_params: ADDITIONAL_CLI_PARAMS
 ```
@@ -44,7 +46,7 @@ The following parameters are **mandatory**:
 
 - `api_token` — Lokalise API token.
 - `project_id` — Your Lokalise project ID.
-- `translations_path` — Path to your translations. For example, if your translations are stored in the `locales` folder at the project root, use `locales` (leave out leading and trailing slashes).
+- `translations_path` — One or more paths to your translations. For example, if your translations are stored in the `locales` folder at the project root, use `locales` (leave out leading and trailing slashes).
 - `file_format` — Translation file format. For example, if you're using JSON files, just put `json` (no leading dot needed).
 - `base_lang` — The base language of your project (e.g., `en` for English).
 
