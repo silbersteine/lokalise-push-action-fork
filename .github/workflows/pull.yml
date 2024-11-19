@@ -1,4 +1,5 @@
-name: Demo push with tags
+name: Demo pull with tags
+
 on:
   workflow_dispatch:
 
@@ -12,11 +13,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to Lokalise
-        uses: ./.github/actions/push/action.yml
+      - name: Pull from Lokalise
+        uses: ./.github/actions/pull/action.yml
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567
-          base_lang: es
+          translations_path: |
+            packs
           file_format: yml
-          additional_params: "--convert-placeholders --hidden-from-contributors --use-automations"
+          additional_params: 
