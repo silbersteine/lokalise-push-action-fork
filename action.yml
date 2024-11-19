@@ -12,11 +12,11 @@ inputs:
   base_lang:
     description: 'Base language (e.g., en, fr_FR)'
     required: true
-    default: 'en'
+    default: 'es'
   file_format:
     description: 'Format of the translation files (e.g., json). Find all supported file formats at https://developers.lokalise.com/reference/api-file-formats'
     required: true
-    default: 'json'
+    default: 'yml'
   additional_params:
     description: 'Additional parameters for Lokalise CLI on push. Find all supported options at https://github.com/lokalise/lokalise-cli-2-go/blob/main/docs/lokalise2_file_upload.md'
     required: false
