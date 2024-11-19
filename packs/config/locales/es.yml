@@ -1,0 +1,17 @@
+---
+es:
+  activerecord:
+    models:
+      postulante:
+        one: Postulante
+        other: Postulantes
+    attributes:
+      postulante:
+        first_name: Nombre
+        last_name: Primer Apellido
+        segundo_apellido: Segundo Apellido
+        date_of_birth: Fecha de Nacimiento
+        email: Email
+        telefono: Teléfono
+        picture_url: Foto
+        direccion: Dirección
