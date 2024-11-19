@@ -14,7 +14,7 @@ jobs:
             fetch-depth: 0
 
       - name: Pull from Lokalise
-        uses: ./github/actions/pull
+        uses: ./.github/actions/pull
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567

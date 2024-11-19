@@ -13,11 +13,11 @@ jobs:
           fetch-depth: 0
 
       - name: Check the contents of the directory
-        run: ls -la ./github/actions/push
+        run: ls -la ./.github/actions/push
 
 
       - name: Push to Lokalise
-        uses: ./github/actions/push
+        uses: ./.github/actions/push
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567
