@@ -59,7 +59,7 @@ runs:
       id: find-files
       shell: bash
       run: |
-        ALL_FILES=$(find "**/locales/**/${{ inputs.base_lang }}.${{ inputs.file_format }}" -name "*.${{ inputs.file_format }}" -type f | tr '\n' ' ')
+        ALL_FILES=$(find "packs/*/config/locales/${{ inputs.base_lang }}.${{ inputs.file_format }}" -name "*.${{ inputs.file_format }}" -type f | tr '\n' ' ')
 
         if [ -z "$ALL_FILES" ]; then
           echo "No translation files found."
