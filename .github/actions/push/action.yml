@@ -5,7 +5,6 @@ inputs:
   api_token:
     description: 'API token for Lokalise with read/write permissions'
     required: true
-    secret: true
   project_id:
     description: 'Project ID for Lokalise'
     required: true
