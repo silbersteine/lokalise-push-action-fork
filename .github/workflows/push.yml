@@ -12,6 +12,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check the contents of the directory
+        run: ls -la ./github/actions/push
+
+
       - name: Push to Lokalise
         uses: ./github/actions/push
         with:
