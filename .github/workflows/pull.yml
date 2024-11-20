@@ -18,5 +18,6 @@ jobs:
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567
+          base_lang: es
           file_format: yml
           additional_params: 
