@@ -47,6 +47,7 @@ download_files() {
             --format="$file_format" \
             --original-filenames=true \
             --directory-prefix="/" \
+            --include-tags="$github_ref_name" \
             $additional_params 2>&1)
 
         exit_code=$?
