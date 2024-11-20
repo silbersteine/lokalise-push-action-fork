@@ -12,7 +12,11 @@ inputs:
   base_lang:
     description: 'Base language (e.g., en, fr_FR)'
     required: true
-    default: 'es'
+    default: 'en'
+  translations_path:
+    description: 'Path to translation files. Supports wildcards (e.g., packs/**/config/locales).'
+    required: true
+    default: 'locales'
   file_format:
     description: 'Format of the translation files (e.g., json). Find all supported file formats at https://developers.lokalise.com/reference/api-file-formats'
     required: true
@@ -73,11 +77,11 @@ runs:
         fi
 
         if [[ "${{ inputs.always_pull_base }}" == "true" ]]; then
-            STATUS_CMD=$(git status "packs/**/config/locales/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain)
-            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/*.${{ inputs.file_format }}")
+          STATUS_CMD=$(git status "${{ inputs.translations_path }}" --untracked-files=no --porcelain)
+          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}")
         else
-            STATUS_CMD=$(git status "packs/**/config/locales/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
-            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/*.${{ inputs.file_format }}" | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
+          STATUS_CMD=$(git status "${{ inputs.translations_path }}" --untracked-files=no --porcelain | grep -v "/${{ inputs.base_lang }}.${{ inputs.file_format }}" || true)
+          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}" | grep -v "/${{ inputs.base_lang }}.${{ inputs.file_format }}" || true)
         fi
 
         if [[ -z "$STATUS_CMD" && -z "$UNTRACKED_FILES" ]]; then
@@ -106,9 +110,9 @@ runs:
         git checkout -b "$BRANCH_NAME" || git checkout "$BRANCH_NAME"
       
         if [[ "${{ inputs.always_pull_base }}" == "true" ]]; then
-          git add "packs/**/config/locales/**/.${{ inputs.file_format }}" --force
+          git add "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}" --force
         else
-          git add "packs/**/config/locales/**/.${{ inputs.file_format }}" --force ":!packs/**/config/locales/**/${{ inputs.base_lang }}.${{ inputs.file_format }}"
+          git add "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}" --force ":!${{ inputs.translations_path }}/${{ inputs.base_lang }}"
         fi
         git commit -m 'Translations update'
         git push origin "$BRANCH_NAME"
