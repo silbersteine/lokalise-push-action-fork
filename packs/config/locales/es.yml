@@ -1,15 +1,13 @@
----
-es:
-  activerecord:
-    models:
-      postulante:
-        one: Postulante
-        other: Postulantes
+activerecord:
     attributes:
-      postulante:
-        first_name: Nombre
-        last_name: Primer Apellido
-        segundo_apellido: Segundo Apellido
-        rut: ${activerecord.attributes.person.rut}
-        date_of_birth: Fecha de Nacimiento
-        email: Email 2
+        postulante:
+            date_of_birth: 'Fecha de Nacimiento'
+            email: 'Email 2'
+            first_name: Nombre
+            last_name: 'Primer Apellido'
+            rut: $%1$s
+            segundo_apellido: 'Segundo Apellido'
+    models:
+        postulante:
+            one: Postulante
+            other: Postulantes
