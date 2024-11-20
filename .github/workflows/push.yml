@@ -22,7 +22,7 @@ jobs:
             packs/config/locales
             packs/foo/bar/baz/config/locales
             packs/foo/bar/baz/qux/config/locales
-            packs/foo/bar/config/locales
-            packs/foo/config/locales
+            packs/foo/bar/config/locale
+          flat_naming: true 
           file_format: yml
           additional_params: --use-automations
