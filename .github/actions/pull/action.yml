@@ -1,0 +1,153 @@
+name: 'Pull from Lokalise'
+description: GitHub action to download translation files from Lokalise TMS to your GitHub repository in the form of a pull request.
+author: 'Lokalise Group, Ilya Krukowski'
+inputs:
+  api_token:
+    description: 'API token for Lokalise with read/write permissions'
+    required: true
+    secret: true
+  project_id:
+    description: 'Project ID for Lokalise'
+    required: true
+  base_lang:
+    description: 'Base language (e.g., en, fr_FR)'
+    required: true
+    default: 'en'
+  translations_path:
+    description: 'Paths to translation files'
+    required: true
+    default: |
+      locales
+  file_format:
+    description: 'Format of the translation files (e.g., json). Find all supported file formats at https://developers.lokalise.com/reference/api-file-formats'
+    required: true
+    default: 'json'
+  additional_params:
+    description: 'Additional parameters for Lokalise CLI on pull. Find all supported options at https://github.com/lokalise/lokalise-cli-2-go/blob/main/docs/lokalise2_file_download.md'
+    required: false
+    default: ''
+  temp_branch_prefix:
+    description: 'Prefix for the temp branch to create pull request'
+    required: false
+    default: 'lok'
+  always_pull_base:
+    description: 'By default, changes in the base language translation files are ignored. Set this to true to include base language translations in the PR.'
+    required: false
+    default: false
+  max_retries:
+    description: 'Maximum number of retries on rate limit errors'
+    required: false
+    default: 3
+  sleep_on_retry:
+    description: 'Number of seconds to sleep before retrying'
+    required: false
+    default: 1
+  flat_naming:
+    description: 'Use flat naming convention (true/false). If true, expects files like locales/en.json instead of locales/en/file.json'
+    required: false
+    default: false
+permissions:
+  contents: write
+  pull-requests: write
+branding:
+  icon: 'download-cloud'
+  color: 'orange'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Lokalise CLI
+      shell: bash
+      run: |
+        set -e
+        chmod +x "${{ github.action_path }}/src/scripts/install_lokalise_cli.sh"
+        "${{ github.action_path }}/src/scripts/install_lokalise_cli.sh"
+
+    - name: Pull translation files from Lokalise
+      id: pull-files
+      shell: bash
+      env:
+        CLI_ADD_PARAMS: ${{ inputs.additional_params }}
+        MAX_RETRIES: ${{ inputs.max_retries }}
+        SLEEP_TIME: ${{ inputs.sleep_on_retry }}
+        FILE_FORMAT: ${{ inputs.file_format }}
+        TRANSLATIONS_PATH: "${{ inputs.translations_path }}"
+        BASE_LANG: "${{ inputs.base_lang }}"
+        ALWAYS_PULL_BASE: "${{ inputs.always_pull_base }}"
+        FLAT_NAMING: "${{ inputs.flat_naming }}"
+      run: |
+        set -e
+        chmod +x "${{ github.action_path }}/src/scripts/lokalise_download.sh"
+
+        . "${{ github.action_path }}/src/scripts/lokalise_download.sh"
+
+        download_files "${{ inputs.project_id }}" "${{ inputs.api_token }}"
+
+        if [ $? -ne 0 ]; then
+          echo "Error during file download"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        if detect_changed_files; then
+          echo "Translation file changes detected after pulling from Lokalise"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "No translation file changes detected after pulling from Lokalise"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit changes
+      id: create-commit
+      if: steps.pull-files.outputs.has_changes == 'true'
+      env:
+        FILE_FORMAT: ${{ inputs.file_format }}
+        TRANSLATIONS_PATH: "${{ inputs.translations_path }}"
+        BASE_LANG: "${{ inputs.base_lang }}"
+        ALWAYS_PULL_BASE: "${{ inputs.always_pull_base }}"
+        FLAT_NAMING: "${{ inputs.flat_naming }}"
+        TEMP_BRANCH_PREFIX: "${{ inputs.temp_branch_prefix }}"
+      shell: bash
+      run: |
+        set -e
+        chmod +x "${{ github.action_path }}/src/scripts/commit_changes.sh"
+        
+        . "${{ github.action_path }}/src/scripts/commit_changes.sh"
+        
+        if commit_and_push_changes; then
+          echo "commit_created=true" >> $GITHUB_OUTPUT
+        else
+          echo "commit_created=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create or Update Pull Request
+      if: steps.pull-files.outputs.has_changes == 'true' && steps.create-commit.outputs.commit_created == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          try {
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: "${{ github.repository_owner }}",
+              repo: "${{ github.event.repository.name }}",
+              head: "${{ github.repository_owner }}:${{ env.branch_name }}",
+              base: "${{ github.ref_name }}",
+              state: 'open'
+            });
+
+            if (pullRequests.length > 0) {
+              console.log(`PR already exists: ${pullRequests[0].html_url}`);
+            } else {
+              const { data: newPr } = await github.rest.pulls.create({
+                owner: "${{ github.repository_owner }}",
+                repo: "${{ github.event.repository.name }}",
+                title: "Lokalise translations update",
+                head: "${{ env.branch_name }}",
+                base: "${{ github.ref_name }}",
+                body: "This PR updates translations from Lokalise.",
+              });
+              console.log(`Created new PR: ${newPr.html_url}`);
+            }
+          } catch (error) {
+            core.setFailed(`Failed to create or update pull request: ${error.message}`);
+          }
