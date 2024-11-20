@@ -11,10 +11,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Pull from Lokalise
-        uses: ./.github/actions/pull
+        uses: lokalise/lokalise-pull-action@v2.0.0
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567
@@ -24,6 +24,5 @@ jobs:
             packs/foo/bar/baz/qux/config/locales
             packs/foo/bar/config/locales
             packs/foo/config/locales
-          base_lang: es
           file_format: yml
-          additional_params: 
+          additional_params:
