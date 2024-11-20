@@ -1,3 +1,14 @@
-key1: value1
-key2: value2
-key3: value3
+activerecord:
+    attributes:
+        postulante:
+            date_of_birth: 'Fecha de Nacimiento'
+            email: Email
+            first_name: Nombre
+            last_name: 'Primer Apellido'
+            picture_url: Foto
+            segundo_apellido: 'Segundo Apellido'
+            telefono: Teléfono
+    models:
+        postulante:
+            one: Postulante
+            other: Postulantes

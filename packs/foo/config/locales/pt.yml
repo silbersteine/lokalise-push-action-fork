@@ -1,0 +1,15 @@
+activerecord:
+    attributes:
+        postulante:
+            date_of_birth: 'Data de nascimento'
+            direccion: Endereço
+            email: E-mail
+            first_name: Nome
+            last_name: 'Primeiro Sobrenome'
+            rut: '$ %1$s'
+            segundo_apellido: 'Segundo sobrenome'
+            telefono: Telefone
+    models:
+        postulante:
+            one: Postulante
+            other: Candidatos
