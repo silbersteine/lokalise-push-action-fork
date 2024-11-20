@@ -19,7 +19,11 @@ jobs:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
           project_id: 97629107673c93d1a4fc70.11630567
           translations_path: |
-            packs/**/config/locales/**
+            packs/config/locales
+            packs/foo/bar/baz/config/locales
+            packs/foo/bar/baz/qux/config/locales
+            packs/foo/bar/config/locales
+            packs/foo/config/locales
           base_lang: es
           file_format: yml
           additional_params: 

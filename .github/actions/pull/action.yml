@@ -14,7 +14,7 @@ inputs:
     required: true
     default: 'en'
   translations_path:
-    description: 'Path to translation files. Supports wildcards (e.g., packs/**/config/locales).'
+    description: 'Path to translation files'
     required: true
     default: 'locales'
   file_format:
@@ -77,11 +77,11 @@ runs:
         fi
 
         if [[ "${{ inputs.always_pull_base }}" == "true" ]]; then
-          STATUS_CMD=$(git status "${{ inputs.translations_path }}" --untracked-files=no --porcelain)
-          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}")
+          STATUS_CMD=$(git status "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain)
+          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}")
         else
-          STATUS_CMD=$(git status "${{ inputs.translations_path }}" --untracked-files=no --porcelain | grep -v "/${{ inputs.base_lang }}.${{ inputs.file_format }}" || true)
-          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}" | grep -v "/${{ inputs.base_lang }}.${{ inputs.file_format }}" || true)
+          STATUS_CMD=$(git status "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain | grep -v "${{ inputs.translations_path }}/${{ inputs.base_lang }}" || true)
+          UNTRACKED_FILES=$(git ls-files --others --exclude-standard "${{ inputs.translations_path }}/**/*.${{ inputs.file_format }}" | grep -v "${{ inputs.translations_path }}/${{ inputs.base_lang }}" || true)
         fi
 
         if [[ -z "$STATUS_CMD" && -z "$UNTRACKED_FILES" ]]; then
