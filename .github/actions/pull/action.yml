@@ -73,11 +73,11 @@ runs:
         fi
 
         if [[ "${{ inputs.always_pull_base }}" == "true" ]]; then
-            STATUS_CMD=$(git status "packs/**/config/locales/**/.${{ inputs.file_format }}" --untracked-files=no --porcelain)
-            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/.${{ inputs.file_format }}")
+            STATUS_CMD=$(git status "packs/**/config/locales/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain)
+            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/*.${{ inputs.file_format }}")
         else
-            STATUS_CMD=$(git status "packs/**/config/locales/**/.${{ inputs.file_format }}" --untracked-files=no --porcelain | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
-            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/.${{ inputs.file_format }}" | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
+            STATUS_CMD=$(git status "packs/**/config/locales/**/*.${{ inputs.file_format }}" --untracked-files=no --porcelain | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
+            UNTRACKED_FILES=$(git ls-files --others --exclude-standard "packs/**/config/locales/**/*.${{ inputs.file_format }}" | grep -v "packs/**/config/locales/**/${{ inputs.base_lang }}" || true)
         fi
 
         if [[ -z "$STATUS_CMD" && -z "$UNTRACKED_FILES" ]]; then
