@@ -1,0 +1,13 @@
+activerecord:
+    attributes:
+        postulante:
+            date_of_birth: 'Fecha de nacimiento'
+            email: 'Correos electrónicos'
+            first_name: 'Nombre de pila'
+            last_name: Apellido
+            rut: '$ %1$s'
+            segundo_apellido: 'Segundo apellido'
+    models:
+        postulante:
+            one: Solicitante
+            other: Solicitantes
