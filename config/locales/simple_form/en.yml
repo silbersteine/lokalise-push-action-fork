@@ -12,4 +12,4 @@ en:
         segundo_apellido: Second Last Name
         rut: ${activerecord.attributes.person.rut}
         date_of_birth: Date of Birth
-        email: Emails
+        email: Emailss

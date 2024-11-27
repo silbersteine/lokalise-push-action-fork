@@ -16,7 +16,7 @@ jobs:
         uses: ./.github/actions/push
         with:
           api_token: ${{ secrets.LOKALISE_API_TOKEN }}
-          project_id: 97629107673c93d1a4fc70.11630567
+          project_id: 728044426499ab4e96ee46.18204254
           base_lang: en
           translations_path: |
             config/locales/models
